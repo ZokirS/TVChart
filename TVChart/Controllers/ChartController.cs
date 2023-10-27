@@ -3,7 +3,7 @@ using TVChart.Models;
 
 namespace TVChart.Controllers;
 
-[Route("api/chart")]
+[Route("[controller]")]
 [ApiController]
 public class ChartController : ControllerBase
 {
@@ -24,7 +24,8 @@ public class ChartController : ControllerBase
                     Open = 75.16m,
                     High = 82.84m,
                     Low= 36.16m,
-                    Close = 45.72m
+                    Close = 45.72m,
+                    Rsi = 30.8m
                 },
                 new Candle
                 {
@@ -32,7 +33,8 @@ public class ChartController : ControllerBase
                     Open = 75.16m,
                     High = 45.12m,
                     Low= 45.12m,
-                    Close = 48.72m
+                    Close = 48.72m,
+                    Rsi = 39.6m
                 },
                 new Candle
                 {
@@ -40,7 +42,8 @@ public class ChartController : ControllerBase
                     Open = 60.71m,
                     High = 60.71m,
                     Low= 53.39m,
-                    Close = 59.29m
+                    Close = 59.29m,
+                    Rsi = 70.5m
                 }});
         return candles.OrderBy(x=>x.Time);
     }

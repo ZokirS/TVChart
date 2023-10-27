@@ -41,27 +41,34 @@ export class Chart extends React.Component {
                 },
             },
             layout: {
-                background: {
-                  color: 'gray'
-                },
-                textColor: '#ffffff'
+                background: { type: 'solid', color: 'white' } ,
+                textColor: 'black'
               }
         }
         this.chart = createChart('chartContainer', chartOptions);
 
         const barSeries = this.chart.addCandlestickSeries();
-        let data = [];
+        const rsiLine = this.chart.addBaselineSeries();
+        let candleData = [];
+        let rsiData = [];
         candles.map(candle => {
-            data.push({
-                time : moment(candle.time).format('YYYY-MM-DD'),
+            let time = moment(candle.time).format('YYYY-MM-DD');
+            candleData.push({
+                time : time,
                 open : candle.open,
                 high: candle.high,
                 low: candle.low,
                 close: candle.close
             })
+            rsiData.push({
+                time: time,
+                value: candle.rsi
+            })
         })
+
         // set the data
-        barSeries.setData(data);
+        barSeries.setData(candleData);
+        rsiLine.setData(rsiData);
     }
 
 	render() {
@@ -74,7 +81,7 @@ export class Chart extends React.Component {
 		);
 	}
     async populateChartData(){
-        const response = await fetch("https://localhost:7120/api/chart", { method: 'GET'});
+        const response = await fetch("chart", { method: 'GET'});
         const data = await response.json();
         this.setState({candles: data, loading: false})
     }
