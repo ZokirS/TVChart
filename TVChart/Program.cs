@@ -1,8 +1,19 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.EntityFrameworkCore;
+using TVChart.DAL.Context;
+using TVChart.Services;
 
+var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
+var defaultConnectionString = config.GetConnectionString("DefaultConnection");
 // Add services to the container.
 
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ICandleService, CandleService>();
+builder.Services.AddDbContext<DatabaseContext>(opts =>
+{
+    opts.UseMySql(defaultConnectionString, ServerVersion.AutoDetect(defaultConnectionString));
+});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",

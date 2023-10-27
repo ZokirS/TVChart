@@ -17,6 +17,8 @@ export class Chart extends React.Component {
         this.populateChartData();
     }
 
+   
+    
     static renderCandlesChart(candles){
         const chartOptions = {
             width: window.width,
@@ -43,16 +45,29 @@ export class Chart extends React.Component {
             layout: {
                 background: { type: 'solid', color: 'white' } ,
                 textColor: 'black'
-              }
+              },
+              timeScale: {
+                visible: true,
+                timeVisible: true,
+                secondsVisible: true,
+            }
         }
         this.chart = createChart('chartContainer', chartOptions);
 
         const barSeries = this.chart.addCandlestickSeries();
-        const rsiLine = this.chart.addBaselineSeries();
+        const rsiLine = this.chart.addLineSeries({
+            title: 'second',
+            priceFormat: {
+                minMove: 1,
+                precision: 0,
+            },
+            color: '#ff0000',
+            pane: 1
+        });
         let candleData = [];
         let rsiData = [];
         candles.map(candle => {
-            let time = moment(candle.time).format('YYYY-MM-DD');
+            let time = moment(candle.openTime).utcOffset(0, true).valueOf() / 1000;
             candleData.push({
                 time : time,
                 open : candle.open,
@@ -68,7 +83,7 @@ export class Chart extends React.Component {
 
         // set the data
         barSeries.setData(candleData);
-        rsiLine.setData(rsiData);
+        rsiLine.setData(generateLineData(0, 100, 20));
     }
 
 	render() {
@@ -85,5 +100,22 @@ export class Chart extends React.Component {
         const data = await response.json();
         this.setState({candles: data, loading: false})
     }
+     
+}
+function generateLineData(minValue, maxValue, maxDailyGainLoss = 1000) {
+    var res = [];
+    var time = new Date(Date.UTC(2018, 0, 1, 0, 0, 0, 0));
+    for (var i = 0; i < 500; ++i) {
+        var previous = res.length > 0 ? res[res.length - 1] : { value: 0 };
+        var newValue = previous.value + ((Math.random() * maxDailyGainLoss * 2) - maxDailyGainLoss);
 
+        res.push({
+            time: time.getTime() / 1000,
+            value: Math.max(minValue, Math.min(maxValue, newValue))
+        });
+
+        time.setUTCDate(time.getUTCDate() + 1);
+    }
+
+    return res;
 }
