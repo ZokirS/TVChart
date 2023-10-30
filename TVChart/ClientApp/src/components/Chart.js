@@ -2,6 +2,7 @@ import * as React from 'react';
 import {
     createChart,
     CrosshairMode,
+    LastPriceAnimationMode,
     LineStyle
 } from 'lightweight-charts';
 import moment from 'moment';
@@ -60,13 +61,15 @@ export class Chart extends React.Component {
             timeScale: {
                 timeVisible: true,
                 secondsVisible: true,
+                minBarSpacing: 0.001,
             }
         }
         var chart = createChart(chartEl, chartOptions);
         var axis = createChart(axisEl, chartOptions);
 
         var barSeries = chart.addCandlestickSeries();
-        var lineSeries = axis.addAreaSeries();
+        var lineSeries = axis.addLineSeries({lastPriceAnimation: LastPriceAnimationMode.Continuous});
+        
         let candleData = [];
         let rsiData = [];
         candles.map(candle => {
@@ -87,7 +90,20 @@ export class Chart extends React.Component {
 
         barSeries.setData(candleData);
         lineSeries.setData(rsiData);
-
+        lineSeries.createPriceLine({
+            price: 70.0,
+            color: 'green',
+            lineWidth: 2,
+            lineStyle: LineStyle.Dotted,
+            axisLabelVisible: false
+        })
+        lineSeries.createPriceLine({
+            price: 30.0,
+            color: 'green',
+            lineWidth: 2,
+            lineStyle: LineStyle.Dotted,
+            axisLabelVisible: false
+        })
         let isCrossHairMoving = false;
         chart.subscribeCrosshairMove(param => {
             if (!param.point) return;
@@ -96,6 +112,7 @@ export class Chart extends React.Component {
 
             isCrossHairMoving = true;
             axis.setCrosshairPosition(param.point, param.time, lineSeries);
+           
             isCrossHairMoving = false;
         });
 
