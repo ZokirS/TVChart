@@ -15,9 +15,9 @@ public class ChartController : ControllerBase
         _service = service;
     }
     [HttpGet]
-    public  IActionResult Get()
+    public  IActionResult Get([FromQuery]int timeframeId = 4)
     {
-        var candles =  _service.GetAllCandles();
+        var candles =  _service.GetAllCandles(timeframeId);
         return Ok(candles);
     }
 }

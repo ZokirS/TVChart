@@ -4,6 +4,6 @@ namespace TVChart.Services
 {
     public interface ICandleService
     {
-        IEnumerable<CandleDto> GetAllCandles();
+        IEnumerable<CandleDto> GetAllCandles(int timeframeId);
     }
 }

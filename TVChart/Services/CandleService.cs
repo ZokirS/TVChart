@@ -15,9 +15,9 @@ namespace TVChart.Services
             _context = context;
 
         }
-        public  IEnumerable<CandleDto> GetAllCandles()
+        public  IEnumerable<CandleDto> GetAllCandles(int timeframeId)
         {
-            var candles =  _context.Candle.Where(x=>x.ExchangeTimeframeId == 3).ToArray();
+            var candles =  _context.Candle.Where(x=>x.ExchangeTimeframeId == timeframeId).ToArray();
             var candlesDto =  _mapper.Map<IEnumerable<CandleDto>>(candles);
             return candlesDto.OrderBy(x => x.OpenTime);
         }

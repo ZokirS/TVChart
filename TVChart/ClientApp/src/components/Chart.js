@@ -7,7 +7,6 @@ import {
 } from 'lightweight-charts';
 import moment from 'moment';
 
-
 export class Chart extends React.Component {
 
     static displayName = Chart.name;
@@ -15,17 +14,14 @@ export class Chart extends React.Component {
     constructor(props) {
         super(props);
         this.chart = null;
+        this.interval = React.createRef();
         this.state = {
+            count: 2,
             candles: [],
             loading: true
         };
     }
-
-    componentDidMount() {
-        this.populateChartData();
-    }
-
-
+   
 
     static renderCandlesChart(candles) {
         var chartEl = document.getElementById('chart');
@@ -60,7 +56,7 @@ export class Chart extends React.Component {
             },
             timeScale: {
                 timeVisible: true,
-                secondsVisible: true,
+                secondsVisible: false,
                 minBarSpacing: 0.001,
             }
         }
@@ -179,19 +175,29 @@ export class Chart extends React.Component {
             chart.timeScale().setVisibleLogicalRange(range)
         })
     }
-
     render() {
-        this.state.loading ?
+         let loading = this.state.loading ?
             <p> <em> Loading... </em></p>
             : Chart.renderCandlesChart(this.state.candles);
-        return ( <div>
-                    <div id = "chart" ></div> 
-                    <div id = "axis" > </div>
-                </div>
+            
+        return ( 
+            <div>
+                {loading}
+                <div id = "chart" ></div>                                                                                                                                                                                                           
+                <div id = "axis" > </div>
+            </div>
             );
     }
-    async populateChartData() {
-        const response = await fetch("chart", {
+   
+    Interval() {
+        var interval = this.interval;
+        this.populateChartData(interval.current)
+     }
+    async populateChartData(interval) {
+        console.log(typeof interval);
+        const url = 'chart'.concat( interval ? `?timeframeId=${encodeURIComponent(interval)}` : '')
+
+        const response = await fetch(url, {
             method: 'GET'
         });
         const data = await response.json();
@@ -201,24 +207,4 @@ export class Chart extends React.Component {
         })
     }
 
-}
-
-function generateLineData(minValue, maxValue, maxDailyGainLoss = 1000) {
-    var res = [];
-    var time = new Date(Date.UTC(2018, 0, 1, 0, 0, 0, 0));
-    for (var i = 0; i < 500; ++i) {
-        var previous = res.length > 0 ? res[res.length - 1] : {
-            value: 0
-        };
-        var newValue = previous.value + ((Math.random() * maxDailyGainLoss * 2) - maxDailyGainLoss);
-
-        res.push({
-            time: time.getTime() / 1000,
-            value: Math.max(minValue, Math.min(maxValue, newValue))
-        });
-
-        time.setUTCDate(time.getUTCDate() + 1);
-    }
-
-    return res;
 }

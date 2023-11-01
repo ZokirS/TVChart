@@ -1,4 +1,4 @@
-import  { Chart } from "./components/Chart";
+import  ChartComponent from "./components/ChartComponent.jsx";
 import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
@@ -18,7 +18,7 @@ const AppRoutes = [
   },
   {
     path: '/chart',
-    element: <Chart />
+    element: <ChartComponent/>
   }
 ];
 
