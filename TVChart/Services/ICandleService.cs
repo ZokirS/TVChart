@@ -1,9 +1,10 @@
-﻿using TVChart.DTOs;
+﻿using TVChart.DAL.Models;
+using TVChart.DTOs;
 
 namespace TVChart.Services
 {
     public interface ICandleService
     {
-        IEnumerable<CandleDto> GetAllCandles(int timeframeId);
+        IEnumerable<ModifiedCandle> GetAllCandles();
     }
 }

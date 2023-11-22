@@ -67,10 +67,10 @@ export default class ChartComponent extends Component {
     this.rsiSeries = this.rsiChart.addLineSeries({lastPriceAnimation: LastPriceAnimationMode.Continuous})
   }
 
-  fetchData(interval) {
+  fetchData() {
     // Replace this with your backend data fetching logic
     // Example: fetch data from an API
-    fetch(`chart?timeframeId=${interval}`)
+    fetch(`chart`)
       .then((response) => response.json())
       .then((data) => {
         this.state.chartData = data ;
@@ -207,7 +207,7 @@ export default class ChartComponent extends Component {
   render() {
     return (
       <div>
-        <label>
+        {/* <label>
           Select Time Interval:
           <select value={this.state.selectedInterval} onChange={this.handleIntervalChange}>
             <option value="1">15m</option>
@@ -216,7 +216,7 @@ export default class ChartComponent extends Component {
             <option value="4">1D</option>
             <option value="5">1W</option>
           </select>
-        </label>
+        </label> */}
         <div ref={this.candleRef}></div>
         <div ref={this.rsiRef}></div>
       </div>
