@@ -84,7 +84,7 @@ export default class ChartComponent extends Component {
   updateChart() {
     var candlesData = []
     var rsiData = []
-    
+    var positions = [];
     var chartEl = this.candleRef.current;
     var axisEl = this.rsiRef.current;
     var chartData = this.state.chartData;
@@ -96,13 +96,33 @@ export default class ChartComponent extends Component {
             high: candle.high,
             low: candle.low,
             close: candle.close
-        })
+        });
         rsiData.push({
           time: time,
           value: candle.rsi
-        })
+        });
+        if(candle.operation === 1){
+          positions.push({
+            time: time,
+            position: 'aboveBar',
+            color: 'green',
+            shape: 'arrowUp',
+            text: 'Buy',
+            size: 1
+          })
+        }
+        if(candle.operation === 2){
+          positions.push({
+            time: time,
+            position: 'belowBar',
+            color: 'red',
+            shape: 'arrowDown',
+            text: 'Sell'
+          })
+        }
       })
     this.candleSeries.setData(candlesData);
+    this.candleSeries.setMarkers(positions);
     this.rsiSeries.setData(rsiData);
 
     this.rsiSeries.createPriceLine({
